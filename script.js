@@ -29,4 +29,20 @@ window.addEventListener("DOMContentLoaded", () => {
         });
         return result;
     }
+
+    function operator(operator, ...numbers) {
+        // if (operator === add) call add
+    }
+
+    const display = document.getElementById("display");
+    display.innerText = "";
+
+    const buttonsContainer = document.getElementById("buttons-container");
+    buttonsContainer.addEventListener("click", getButtonValue);
+
+    function getButtonValue(e) {
+        if (e.target != e.currentTarget) {
+            display.innerText += e.target.innerText;
+        }
+    }
 });
