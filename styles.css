@@ -68,15 +68,17 @@ body {
     align-items: center;
 }
 
-.btn-number {
+.btn-number,
+.btn-point {
     background-color: #4b4b4b;
 }
 
-.btn-operator {
+.btn-operator,
+.btn-equals {
     background-color: #d3940d;
 }
 
-.reset {
+.btn-clear {
     background-color: #aaaaaa;
 }
 
