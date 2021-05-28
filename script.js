@@ -12,14 +12,21 @@ window.addEventListener("DOMContentLoaded", () => {
     display.innerText = "";
 
     const buttonsContainer = document.getElementById("buttons-container");
-    buttonsContainer.addEventListener("click", getButtonValue);
 
-    window.addEventListener("keypress", getKeyValue);
+    buttonsContainer.addEventListener("click", getInput);
+    window.addEventListener("keypress", getInput);
 
-    function getKeyValue(e) {
+    function getInput(e) {
+        const button = e.target;
+
+        let value = e.target.value;
+        let display = button.innerText;
+
         const key = e.key;
-
-        // return console.log(key);
+        if (key) {
+            value = key;
+            display = key;
+        }
 
         const isKeyNumber = isNumberRegEx.test(key);
         const isKeyPoint = key === ".";
@@ -28,69 +35,38 @@ window.addEventListener("DOMContentLoaded", () => {
         const isKeyEquals = key === "Enter";
         const isKeyClear = key === " ";
 
-        // return console.log(isKeyClear);
-
-        if (isKeyNumber) {
-            processBtnNumber(key, key);
-        }
-
-        if (isKeyPoint) {
-            processBtnPoint(key, key);
-        }
-
-        if (isKeyOperator) {
-            processBtnOperator(key, key);
-        }
-
-        if (isKeyEquals) {
-            solveCalculation(calculation);
-            console.log("equals");
-        }
-
-        if (isKeyClear) {
-            calculation = [];
-            display.innerText = "";
-            console.log("clear");
-        }
-    }
-
-    function getButtonValue(e) {
-        const button = e.target;
-        const buttonValue = e.target.value;
-        const buttonText = button.innerText;
-
         const classes = Array.from(button.classList);
-        const isBtnNumber = classes.includes("btn-number");
-        const isBtnPoint = classes.includes("btn-point");
-        const isBtnOperator = classes.includes("btn-operator");
-        const isBtnEquals = classes.includes("btn-equals");
-        const isBtnClear = classes.includes("btn-clear");
+        const isNumber = isKeyNumber || classes.includes("btn-number");
+        const isPoint = isKeyPoint || classes.includes("btn-point");
+        const isOperator = isKeyOperator || classes.includes("btn-operator");
+        const isEquals = isKeyEquals || classes.includes("btn-equals");
+        const isClear = isKeyClear || classes.includes("btn-clear");
 
-        if (isBtnNumber) {
-            processBtnNumber(buttonValue, buttonText);
+        if (isNumber) {
+            processNumber(value, display);
         }
 
-        if (isBtnPoint) {
-            processBtnPoint(buttonValue, buttonText);
+        if (isPoint) {
+            processPoint(value, display);
         }
 
-        if (isBtnOperator) {
-            processBtnOperator(buttonValue, buttonText);
+        if (isOperator) {
+            processOperator(value, display);
         }
 
-        if (isBtnEquals) {
+        if (isEquals) {
             solveCalculation(calculation);
             console.log("equals");
         }
 
-        if (isBtnClear) {
+        if (isClear) {
             calculation = [];
             display.innerText = "";
             console.log("clear");
         }
     }
 
-    function printButtonValue(buttonText) {
+    function displayInput(buttonText) {
         switch (buttonText) {
             case "/":
                 buttonText = "÷";
@@ -113,12 +89,12 @@ window.addEventListener("DOMContentLoaded", () => {
         return last;
     }
 
-    function processBtnNumber(buttonValue, buttonText) {
+    function processNumber(buttonValue, buttonText) {
         const last = getCalculationLast();
 
         if (calculation.length === 0 || isOperatorRegEx.test(last.element)) {
             calculation.push(buttonValue);
-            printButtonValue(buttonText);
+            displayInput(buttonText);
             console.log(calculation);
         }
 
@@ -127,24 +103,24 @@ window.addEventListener("DOMContentLoaded", () => {
             isIncompleteDecimalRegEx.test(last.element)
         ) {
             calculation[last.index] += buttonValue;
-            printButtonValue(buttonText);
+            displayInput(buttonText);
 
             console.log(calculation);
         }
     }
 
-    function processBtnPoint(buttonValue, buttonText) {
+    function processPoint(buttonValue, buttonText) {
         const last = getCalculationLast();
 
         if (calculation.length > 0 && isNumberRegEx.test(last.element)) {
             calculation[last.index] += buttonValue;
-            printButtonValue(buttonText);
+            displayInput(buttonText);
 
             console.log(calculation);
         }
     }
 
-    function processBtnOperator(buttonValue, buttonText) {
+    function processOperator(buttonValue, buttonText) {
         const last = getCalculationLast();
         if (
             calculation.length > 0 &&
@@ -152,7 +128,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 isDecimalRegEx.test(last.element))
         ) {
             calculation.push(buttonValue);
-            printButtonValue(buttonText);
+            displayInput(buttonText);
             console.log(calculation);
         }
     }
