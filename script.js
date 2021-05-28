@@ -2,10 +2,10 @@ window.addEventListener("DOMContentLoaded", () => {
     let calculation = [];
     let showingResult = false;
 
-    const isNumberRegEx = /^\d+$/;
-    const isIncompleteDecimalRegEx = /^\d+\.\d{0,1}$/;
-    const isDecimalRegEx = /^\d+\.\d{0,2}$/;
-    const isOperatorRegEx = /^\/|\*|\-|\+$/;
+    const isNumberRegEx = /^-?\d+$/;
+    const isIncompleteDecimalRegEx = /^-?\d+\.\d{0,1}$/;
+    const isDecimalRegEx = /^-?\d+\.\d{0,2}$/;
+    const isOperatorRegEx = /^\/|\*|-|\+$/;
 
     const displayDiv = document.getElementById("display");
 
@@ -53,8 +53,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         if (isEquals) {
-            calculate(calculation);
-            console.log("equals");
+            processEquals();
         }
 
         if (isClear) {
@@ -115,6 +114,8 @@ window.addEventListener("DOMContentLoaded", () => {
             displayDiv.innerText = "";
             calculation.push(inputValue);
             displayInput(inputText);
+            showingResult = false;
+
             console.log(calculation);
         }
     }
@@ -122,7 +123,11 @@ window.addEventListener("DOMContentLoaded", () => {
     function processPoint(inputValue, inputText) {
         const last = getCalculationLast();
 
-        if (calculation.length > 0 && isNumberRegEx.test(last.element)) {
+        if (
+            calculation.length > 0 &&
+            isNumberRegEx.test(last.element) &&
+            showingResult === false
+        ) {
             calculation[last.index] += inputValue;
             displayInput(inputText);
 
@@ -143,6 +148,13 @@ window.addEventListener("DOMContentLoaded", () => {
             showingResult = false;
 
             console.log(calculation);
+        }
+    }
+
+    function processEquals() {
+        if (calculation.length >= 3) {
+            calculate(calculation);
+            console.log("equals");
         }
     }
 
