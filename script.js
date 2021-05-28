@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
     let calculation = [];
-    let previuosCalculation = false;
+    let showingResult = false;
 
     const isNumberRegEx = /^\d+$/;
     const isIncompleteDecimalRegEx = /^\d+\.\d{0,1}$/;
@@ -53,7 +53,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         if (isEquals) {
-            solveCalculation(calculation);
+            calculate(calculation);
             console.log("equals");
         }
 
@@ -100,12 +100,21 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         if (
-            isNumberRegEx.test(last.element) ||
-            isIncompleteDecimalRegEx.test(last.element)
+            showingResult === false &&
+            (isNumberRegEx.test(last.element) ||
+                isIncompleteDecimalRegEx.test(last.element))
         ) {
             calculation[last.index] += inputValue;
             displayInput(inputText);
 
+            console.log(calculation);
+        }
+
+        if (showingResult) {
+            calculation = [];
+            displayDiv.innerText = "";
+            calculation.push(inputValue);
+            displayInput(inputText);
             console.log(calculation);
         }
     }
@@ -130,11 +139,14 @@ window.addEventListener("DOMContentLoaded", () => {
         ) {
             calculation.push(inputValue);
             displayInput(inputText);
+
+            showingResult = false;
+
             console.log(calculation);
         }
     }
 
-    function solveCalculation(inputs) {
+    function calculate(inputs) {
         const a = Number(inputs[0]);
         const sign = inputs[1];
         const b = Number(inputs[2]);
@@ -166,7 +178,7 @@ window.addEventListener("DOMContentLoaded", () => {
         calculation = [];
         calculation.push(resultToFixed);
 
-        previuosCalculation = true;
+        showingResult = true;
 
         console.log(calculation);
     }
