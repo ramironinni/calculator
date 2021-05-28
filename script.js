@@ -6,13 +6,53 @@ window.addEventListener("DOMContentLoaded", () => {
     const isNumberRegEx = /^\d+$/;
     const isIncompleteDecimalRegEx = /^\d+\.\d{0,1}$/;
     const isDecimalRegEx = /^\d+\.\d{0,2}$/;
-    const isOperatorRegEx = /^divide|multiply|substract|add$/;
+    const isOperatorRegEx = /^\/|\*|\-|\+$/;
 
     const display = document.getElementById("display");
     display.innerText = "";
 
     const buttonsContainer = document.getElementById("buttons-container");
     buttonsContainer.addEventListener("click", getButtonValue);
+
+    window.addEventListener("keypress", getKeyValue);
+
+    function getKeyValue(e) {
+        const key = e.key;
+
+        // return console.log(key);
+
+        const isKeyNumber = isNumberRegEx.test(key);
+        const isKeyPoint = key === ".";
+        const isKeyOperator =
+            key === "/" || key === "*" || key === "-" || key === "+";
+        const isKeyEquals = key === "Enter";
+        const isKeyClear = key === " ";
+
+        // return console.log(isKeyClear);
+
+        if (isKeyNumber) {
+            processBtnNumber(key, key);
+        }
+
+        if (isKeyPoint) {
+            processBtnPoint(key, key);
+        }
+
+        if (isKeyOperator) {
+            processBtnOperator(key, key);
+        }
+
+        if (isKeyEquals) {
+            solveCalculation(calculation);
+            console.log("equals");
+        }
+
+        if (isKeyClear) {
+            calculation = [];
+            display.innerText = "";
+            console.log("clear");
+        }
+    }
 
     function getButtonValue(e) {
         const button = e.target;
@@ -51,6 +91,17 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function printButtonValue(buttonText) {
+        switch (buttonText) {
+            case "/":
+                buttonText = "÷";
+                break;
+            case "*":
+                buttonText = "⨯";
+                break;
+            default:
+                break;
+        }
+
         display.innerText += buttonText;
     }
 
@@ -107,22 +158,22 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function solveCalculation(inputs) {
-        const a = inputs[0];
+        const a = Number(inputs[0]);
         const sign = inputs[1];
-        const b = inputs[2];
+        const b = Number(inputs[2]);
         let result;
 
         switch (sign) {
-            case "divide":
+            case "/":
                 result = divide(a, b);
                 break;
-            case "multiply":
+            case "*":
                 result = multiply(a, b);
                 break;
-            case "substract":
+            case "-":
                 result = substract(a, b);
                 break;
-            case "add":
+            case "+":
                 result = add(a, b);
                 break;
             default:
@@ -130,9 +181,21 @@ window.addEventListener("DOMContentLoaded", () => {
                 break;
         }
 
-        printResult(result.toFixed(2));
+        console.log(`Result: ${result}`);
+
+        printResult(addZeroes(result));
         calculation = [];
         console.log(calculation);
+    }
+
+    function addZeroes(num) {
+        let numToString = num.toString();
+        let res = numToString.split(".");
+
+        if (res.length > 1) {
+            num = num.toFixed(2);
+        }
+        return num;
     }
 
     function printResult(result) {
