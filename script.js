@@ -159,27 +159,39 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function calculate(inputs) {
-        const a = Number(inputs[0]);
-        const sign = inputs[1];
-        const b = Number(inputs[2]);
+        let a;
+        let sign;
+        let b;
         let result;
 
-        switch (sign) {
-            case "/":
-                result = divide(a, b);
-                break;
-            case "*":
-                result = multiply(a, b);
-                break;
-            case "-":
-                result = substract(a, b);
-                break;
-            case "+":
-                result = add(a, b);
-                break;
-            default:
-                console.log("BUG!");
-                break;
+        while (inputs.length >= 3) {
+            a = Number(inputs[0]);
+            sign = inputs[1];
+            b = Number(inputs[2]);
+
+            console.log(`a: ${a}
+            sign: ${sign}
+            b: ${b}`);
+
+            switch (sign) {
+                case "/":
+                    result = divide(a, b);
+                    break;
+                case "*":
+                    result = multiply(a, b);
+                    break;
+                case "-":
+                    result = substract(a, b);
+                    break;
+                case "+":
+                    result = add(a, b);
+                    break;
+                default:
+                    console.log("BUG!");
+                    break;
+            }
+
+            inputs.splice(0, 3, result);
         }
 
         console.log(`Result: ${result}`);
