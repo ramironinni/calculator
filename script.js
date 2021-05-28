@@ -1,9 +1,12 @@
 window.addEventListener("DOMContentLoaded", () => {
-    // let currentValue = 0;
+    let currentValue = 0;
     let calculation = [];
-    // const lastIndex = calculation.length - 1;
-    // const lastElement = calculation[lastIndex];
-    // const isNumberRegEx = /^[\d]+$/;
+    // let calcLastIndex;
+    // let calcLastElement;
+    const isNumberRegEx = /^\d+$/;
+    const isIncompleteDecimalRegEx = /^\d+\.\d{0,1}$/;
+    const isDecimalRegEx = /^\d+\.\d{0,2}$/;
+    const isOperatorRegEx = /^divide|multiply|substract|add$/;
 
     const display = document.getElementById("display");
     display.innerText = "";
@@ -13,27 +16,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
     function getButtonValue(e) {
         const button = e.target;
-        const buttonValue = button.value;
+        const buttonValue = e.target.value;
         const buttonText = button.innerText;
 
-        if (button != e.currentTarget) {
-            if (buttonValue === "equals") {
-                operator(calculation);
-            } else if (buttonValue === "clear") {
-                calculation = [];
-                display.innerText = "";
-            } else {
-                calculation.push(buttonValue);
-                console.log(calculation);
-                printButtonValue(buttonText);
-                // processButtonValue(e);
-            }
-        }
-    }
-
-    function processButtonValue(e) {
-        const button = e.target;
-        const buttonValue = e.target.value;
         const classes = Array.from(button.classList);
         const isBtnNumber = classes.includes("btn-number");
         const isBtnPoint = classes.includes("btn-point");
@@ -42,44 +27,86 @@ window.addEventListener("DOMContentLoaded", () => {
         const isBtnClear = classes.includes("btn-clear");
 
         if (isBtnNumber) {
-            processBtnNumber(buttonValue);
+            processBtnNumber(buttonValue, buttonText);
         }
 
         if (isBtnPoint) {
-            processBtnPoint(buttonValue);
+            processBtnPoint(buttonValue, buttonText);
         }
 
         if (isBtnOperator) {
-            console.log("operator");
+            processBtnOperator(buttonValue, buttonText);
         }
 
         if (isBtnEquals) {
+            solveCalculation(calculation);
             console.log("equals");
         }
 
         if (isBtnClear) {
+            calculation = [];
+            display.innerText = "";
             console.log("clear");
         }
     }
-
-    function processBtnNumber(buttonValue) {
-        if (!lastElement) {
-            calculation.push(buttonValue);
-        }
-
-        if (isNumberRegEx.test(lastElement)) {
-            calculation[lastIndex] += buttonValue;
-        }
-        console.log(calculation);
-    }
-
-    function processBtnPoint(buttonValue) {}
 
     function printButtonValue(buttonText) {
         display.innerText += buttonText;
     }
 
-    function operator(inputs) {
+    function getCalculationLast() {
+        const last = {
+            index: calculation.length - 1,
+            element: calculation[calculation.length - 1],
+        };
+        return last;
+    }
+
+    function processBtnNumber(buttonValue, buttonText) {
+        const last = getCalculationLast();
+
+        if (calculation.length === 0 || isOperatorRegEx.test(last.element)) {
+            calculation.push(buttonValue);
+            printButtonValue(buttonText);
+            console.log(calculation);
+        }
+
+        if (
+            isNumberRegEx.test(last.element) ||
+            isIncompleteDecimalRegEx.test(last.element)
+        ) {
+            calculation[last.index] += buttonValue;
+            printButtonValue(buttonText);
+
+            console.log(calculation);
+        }
+    }
+
+    function processBtnPoint(buttonValue, buttonText) {
+        const last = getCalculationLast();
+
+        if (calculation.length > 0 && isNumberRegEx.test(last.element)) {
+            calculation[last.index] += buttonValue;
+            printButtonValue(buttonText);
+
+            console.log(calculation);
+        }
+    }
+
+    function processBtnOperator(buttonValue, buttonText) {
+        const last = getCalculationLast();
+        if (
+            calculation.length > 0 &&
+            (isNumberRegEx.test(last.element) ||
+                isDecimalRegEx.test(last.element))
+        ) {
+            calculation.push(buttonValue);
+            printButtonValue(buttonText);
+            console.log(calculation);
+        }
+    }
+
+    function solveCalculation(inputs) {
         const a = inputs[0];
         const sign = inputs[1];
         const b = inputs[2];
@@ -103,7 +130,9 @@ window.addEventListener("DOMContentLoaded", () => {
                 break;
         }
 
-        printResult(result);
+        printResult(result.toFixed(2));
+        calculation = [];
+        console.log(calculation);
     }
 
     function printResult(result) {
