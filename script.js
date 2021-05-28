@@ -164,6 +164,49 @@ window.addEventListener("DOMContentLoaded", () => {
         let b;
         let result;
 
+        let indexesOfSignsDivMul = [];
+
+        function getAllDivMulIndexes(inputs, sign) {
+            for (let i = 0; i < inputs.length; i++) {
+                if (inputs[i] === sign) {
+                    indexesOfSignsDivMul.push(i);
+                }
+            }
+        }
+
+        getAllDivMulIndexes(inputs, "*");
+        getAllDivMulIndexes(inputs, "/");
+
+        console.log(`indexesOfSigns: ${indexesOfSignsDivMul}`);
+
+        function solvePrecedence() {
+            for (let i = indexesOfSignsDivMul.length - 1; i >= 0; i--) {
+                let signIndex = indexesOfSignsDivMul[i];
+                console.log(`signIndex: ${signIndex}`);
+                sign = inputs[signIndex];
+                console.log(`sign: ${sign}`);
+                a = inputs[signIndex - 1];
+                b = inputs[signIndex + 1];
+
+                switch (sign) {
+                    case "/":
+                        result = divide(a, b);
+                        break;
+                    case "*":
+                        result = multiply(a, b);
+                        break;
+                    default:
+                        console.log("BUG!");
+                        break;
+                }
+
+                inputs.splice(signIndex - 1, 3, result);
+                console.log(`inputs: ${inputs}, vuelta i: ${i}`);
+            }
+        }
+
+        solvePrecedence();
+
         while (inputs.length >= 3) {
             a = Number(inputs[0]);
             sign = inputs[1];
@@ -192,6 +235,7 @@ window.addEventListener("DOMContentLoaded", () => {
             }
 
             inputs.splice(0, 3, result);
+            console.log(inputs);
         }
 
         console.log(`Result: ${result}`);
