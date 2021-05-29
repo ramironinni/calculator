@@ -81,7 +81,8 @@ body {
 }
 
 .btn-clear,
-.btn-backspace {
+.btn-backspace,
+.btn-plus-minus {
     background-color: #aaaaaa;
 }
 

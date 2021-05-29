@@ -33,6 +33,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const isKeyEquals = key === "Enter";
         const isKeyClear = key === " ";
         const isKeyBackspace = key === "z";
+        const isKeyPlusMinus = key === "x";
 
         const classes = Array.from(button.classList);
         const isNumber = isKeyNumber || classes.includes("btn-number");
@@ -41,6 +42,8 @@ window.addEventListener("DOMContentLoaded", () => {
         const isEquals = isKeyEquals || classes.includes("btn-equals");
         const isClear = isKeyClear || classes.includes("btn-clear");
         const isBackspace = isKeyBackspace || classes.includes("btn-backspace");
+        const isPlusMinus =
+            isKeyPlusMinus || classes.includes("btn-plus-minus");
 
         if (isNumber) {
             processNumber(value, displayText);
@@ -65,6 +68,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (isBackspace) {
             processBackspace();
+        }
+
+        if (isPlusMinus) {
+            processPlusMinus();
         }
     }
 
@@ -182,6 +189,38 @@ window.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+    function processPlusMinus() {
+        const last = getCalculationLast();
+        if (typeof last.element == "undefined") {
+            return;
+        }
+
+        if (
+            calculation.length === 1 &&
+            (isNumberRegEx.test(last.element) ||
+                isDecimalRegEx.test(last.element))
+        ) {
+            if (Math.sign(last.element) === 1) {
+                calculation[last.index] = `-${last.element}`;
+
+                displayDiv.innerText = "-" + displayDiv.innerText;
+            }
+
+            if (Math.sign(last.element) === -1) {
+                calculation[last.index] = last.element.substring(
+                    1,
+                    last.element.length
+                );
+                displayDiv.innerText = displayDiv.innerText.substring(
+                    1,
+                    displayDiv.innerText.length
+                );
+            }
+
+            console.log(calculation);
+        }
+    }
+
     function calculate(inputs) {
         let a;
         let sign;
@@ -231,12 +270,6 @@ window.addEventListener("DOMContentLoaded", () => {
             b = Number(inputs[2]);
 
             switch (sign) {
-                case "/":
-                    result = divide(a, b);
-                    break;
-                case "*":
-                    result = multiply(a, b);
-                    break;
                 case "-":
                     result = substract(a, b);
                     break;
