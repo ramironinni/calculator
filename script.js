@@ -32,6 +32,7 @@ window.addEventListener("DOMContentLoaded", () => {
             key === "/" || key === "*" || key === "-" || key === "+";
         const isKeyEquals = key === "Enter";
         const isKeyClear = key === " ";
+        const isKeyBackspace = key === "z";
 
         const classes = Array.from(button.classList);
         const isNumber = isKeyNumber || classes.includes("btn-number");
@@ -39,6 +40,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const isOperator = isKeyOperator || classes.includes("btn-operator");
         const isEquals = isKeyEquals || classes.includes("btn-equals");
         const isClear = isKeyClear || classes.includes("btn-clear");
+        const isBackspace = isKeyBackspace || classes.includes("btn-backspace");
 
         if (isNumber) {
             processNumber(value, displayText);
@@ -61,6 +63,11 @@ window.addEventListener("DOMContentLoaded", () => {
             displayDiv.innerText = "";
             console.log("clear");
         }
+
+        if (isBackspace) {
+            processBackspace();
+            console.log("backspace");
+        }
     }
 
     function displayInput(inputText) {
@@ -74,6 +81,7 @@ window.addEventListener("DOMContentLoaded", () => {
             default:
                 break;
         }
+
         if (displayDiv.innerText === "0") {
             displayDiv.innerText = inputText;
         } else {
@@ -158,35 +166,67 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function processBackspace() {
+        const last = getCalculationLast();
+        console.log(last);
+
+        if (typeof last.element == "undefined") {
+            return;
+        }
+
+        if (last.element.length === 1) {
+            calculation.pop();
+            console.log(calculation);
+            deleteLastInDisplay();
+            return;
+        }
+
+        calculation[last.index] = last.element.substring(
+            0,
+            last.element.length - 1
+        );
+
+        deleteLastInDisplay();
+
+        console.log(calculation);
+    }
+
+    function deleteLastInDisplay() {
+        displayDiv.innerText = displayDiv.innerText.substring(
+            0,
+            displayDiv.innerText.length - 1
+        );
+    }
+
     function calculate(inputs) {
         let a;
         let sign;
         let b;
         let result;
 
-        let indexesOfSignsDivMul = [];
+        let indexesWithPrevalence = [];
 
-        function getAllDivMulIndexes(inputs, sign) {
+        function getIndexesWithPrevalence(inputs, sign) {
             for (let i = 0; i < inputs.length; i++) {
                 if (inputs[i] === sign) {
-                    indexesOfSignsDivMul.push(i);
+                    indexesWithPrevalence.push(i);
                 }
             }
         }
 
-        getAllDivMulIndexes(inputs, "*");
-        getAllDivMulIndexes(inputs, "/");
+        getIndexesWithPrevalence(inputs, "*");
+        getIndexesWithPrevalence(inputs, "/");
 
-        console.log(`indexesOfSigns: ${indexesOfSignsDivMul}`);
+        console.log(`indexesOfSigns: ${indexesWithPrevalence}`);
 
         function solvePrecedence() {
-            for (let i = indexesOfSignsDivMul.length - 1; i >= 0; i--) {
-                let signIndex = indexesOfSignsDivMul[i];
+            for (let i = indexesWithPrevalence.length - 1; i >= 0; i--) {
+                let signIndex = indexesWithPrevalence[i];
                 console.log(`signIndex: ${signIndex}`);
                 sign = inputs[signIndex];
                 console.log(`sign: ${sign}`);
-                a = inputs[signIndex - 1];
-                b = inputs[signIndex + 1];
+                a = Number(inputs[signIndex - 1]);
+                b = Number(inputs[signIndex + 1]);
 
                 switch (sign) {
                     case "/":
@@ -290,10 +330,15 @@ window.addEventListener("DOMContentLoaded", () => {
         return result;
     }
 
-    function divide(...numbers) {
-        const result = numbers.reduce((accum, item) => {
-            return accum / item;
-        });
-        return result;
+    function divide(a, b) {
+        let result;
+
+        if (b === 0) {
+            result = "error";
+            return result;
+        } else {
+            result = a / b;
+            return result;
+        }
     }
 });
