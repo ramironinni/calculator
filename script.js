@@ -61,12 +61,10 @@ window.addEventListener("DOMContentLoaded", () => {
         if (isClear) {
             calculation = [];
             displayDiv.innerText = "";
-            console.log("clear");
         }
 
         if (isBackspace) {
             processBackspace();
-            console.log("backspace");
         }
     }
 
@@ -103,7 +101,6 @@ window.addEventListener("DOMContentLoaded", () => {
         if (calculation.length === 0 || isOperatorRegEx.test(last.element)) {
             calculation.push(inputValue);
             displayInput(inputText);
-            console.log(calculation);
         }
 
         if (
@@ -113,8 +110,6 @@ window.addEventListener("DOMContentLoaded", () => {
         ) {
             calculation[last.index] += inputValue;
             displayInput(inputText);
-
-            console.log(calculation);
         }
 
         if (showingResult) {
@@ -123,8 +118,6 @@ window.addEventListener("DOMContentLoaded", () => {
             calculation.push(inputValue);
             displayInput(inputText);
             showingResult = false;
-
-            console.log(calculation);
         }
     }
 
@@ -138,8 +131,6 @@ window.addEventListener("DOMContentLoaded", () => {
         ) {
             calculation[last.index] += inputValue;
             displayInput(inputText);
-
-            console.log(calculation);
         }
     }
 
@@ -154,21 +145,17 @@ window.addEventListener("DOMContentLoaded", () => {
             displayInput(inputText);
 
             showingResult = false;
-
-            console.log(calculation);
         }
     }
 
     function processEquals() {
         if (calculation.length >= 3) {
             calculate(calculation);
-            console.log("equals");
         }
     }
 
     function processBackspace() {
         const last = getCalculationLast();
-        console.log(last);
 
         if (typeof last.element == "undefined") {
             return;
@@ -176,7 +163,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (last.element.length === 1) {
             calculation.pop();
-            console.log(calculation);
             deleteLastInDisplay();
             return;
         }
@@ -187,8 +173,6 @@ window.addEventListener("DOMContentLoaded", () => {
         );
 
         deleteLastInDisplay();
-
-        console.log(calculation);
     }
 
     function deleteLastInDisplay() {
@@ -217,14 +201,10 @@ window.addEventListener("DOMContentLoaded", () => {
         getIndexesWithPrevalence(inputs, "*");
         getIndexesWithPrevalence(inputs, "/");
 
-        console.log(`indexesOfSigns: ${indexesWithPrevalence}`);
-
         function solvePrecedence() {
             for (let i = indexesWithPrevalence.length - 1; i >= 0; i--) {
                 let signIndex = indexesWithPrevalence[i];
-                console.log(`signIndex: ${signIndex}`);
                 sign = inputs[signIndex];
-                console.log(`sign: ${sign}`);
                 a = Number(inputs[signIndex - 1]);
                 b = Number(inputs[signIndex + 1]);
 
@@ -236,12 +216,10 @@ window.addEventListener("DOMContentLoaded", () => {
                         result = multiply(a, b);
                         break;
                     default:
-                        console.log("BUG!");
                         break;
                 }
 
                 inputs.splice(signIndex - 1, 3, result);
-                console.log(`inputs: ${inputs}, vuelta i: ${i}`);
             }
         }
 
@@ -251,10 +229,6 @@ window.addEventListener("DOMContentLoaded", () => {
             a = Number(inputs[0]);
             sign = inputs[1];
             b = Number(inputs[2]);
-
-            console.log(`a: ${a}
-            sign: ${sign}
-            b: ${b}`);
 
             switch (sign) {
                 case "/":
@@ -270,15 +244,11 @@ window.addEventListener("DOMContentLoaded", () => {
                     result = add(a, b);
                     break;
                 default:
-                    console.log("BUG!");
                     break;
             }
 
             inputs.splice(0, 3, result);
-            console.log(inputs);
         }
-
-        console.log(`Result: ${result}`);
 
         const resultToFixed = addZeroes(result);
         printResult(resultToFixed);
@@ -287,8 +257,6 @@ window.addEventListener("DOMContentLoaded", () => {
         calculation.push(resultToFixed);
 
         showingResult = true;
-
-        console.log(calculation);
     }
 
     function addZeroes(num) {
@@ -303,7 +271,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     function printResult(result) {
         displayDiv.innerText = result;
-        console.log(result);
     }
 
     function add(...numbers) {
